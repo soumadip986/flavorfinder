@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlavorFinder - Discover & Cook Amazing Recipes</title>
+    <meta name="description" content="FlavorFinder — Search thousands of recipes powered by TheMealDB. Filter by cuisine, category, and diet. Save favorites, follow step-by-step cooking mode.">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="auth-loading" class="auth-loading" aria-live="polite">
+        <div class="auth-loading-mark"><i class="fas fa-utensils"></i></div>
+        <strong>Flavor<span>Finder</span></strong>
+        <p>Preparing your kitchen...</p>
+    </div>
+
+    <video class="background-video" autoplay muted loop preload="metadata" aria-hidden="true">
+        <source src="img/hero%20video.mp4" type="video/mp4">
+    </video>
+    <div class="background-overlay" aria-hidden="true"></div>
+
+    <div id="app-shell" class="app-container protected-content">
+
+        <!-- ══ HEADER ══════════════════════════════════════════════════════════ -->
+        <header class="header">
+            <div class="header-top">
+                <div class="logo-container" id="logo-container">
+                    <h1 class="logo" id="logo">Flavor<span>Finder</span></h1>
+                    <div class="utensils">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                </div>
+
+                <!-- Auth Buttons / User Profile (shown based on login state) -->
+                <div class="header-auth" id="header-auth">
+                    <!-- Not logged in -->
+                    <div id="auth-buttons" class="auth-buttons">
+                        <button type="button" id="open-login-btn" class="btn btn-outline-sm">
+                            <i class="fas fa-sign-in-alt"></i> Login
+                        </button>
+                        <button type="button" id="open-register-btn" class="btn btn-primary btn-sm">
+                            <i class="fas fa-user-plus"></i> Register
+                        </button>
+                    </div>
+
+                    <!-- Logged in -->
+                    <div id="user-menu" class="user-menu hidden">
+                        <button type="button" id="favorites-nav-btn" class="btn btn-outline-sm" title="My Favorites">
+                            <i class="fas fa-heart"></i> Favorites
+                            <span id="fav-count-badge" class="fav-badge hidden">0</span>
+                        </button>
+                        <div class="user-dropdown-wrapper">
+                            <button type="button" id="user-dropdown-btn" class="user-avatar-btn">
+                                <span class="user-avatar-icon"><i class="fas fa-user-circle"></i></span>
+                                <span id="user-display-name" class="user-display-name">User</span>
+                                <i class="fas fa-chevron-down user-chevron"></i>
+                            </button>
+                            <div id="user-dropdown" class="user-dropdown hidden">
+                                <div class="dropdown-header">
+                                    <span id="dropdown-username" class="dropdown-username"></span>
+                                    <span id="dropdown-email" class="dropdown-email"></span>
+                                </div>
+                                <hr class="dropdown-divider">
+                                <button type="button" id="profile-btn" class="dropdown-item">
+                                    <i class="fas fa-id-card"></i> Profile
+                                </button>
+                                <button type="button" id="profile-favorites-btn" class="dropdown-item">
+                                    <i class="fas fa-heart"></i> My Favorites
+                                </button>
+                                <button type="button" id="logout-btn" class="dropdown-item dropdown-item-danger">
+                                    <i class="fas fa-sign-out-alt"></i> Logout
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="search-container">
+                <div class="search-input-wrapper">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="search-input" placeholder="Search recipes (e.g. chicken, pizza, biryani, pasta)...">
+                    <button type="button" id="clear-search-btn" class="clear-search-btn hidden" title="Clear search">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <button type="button" id="search-btn" class="btn btn-primary">Search</button>
+            </div>
+        </header>
+
+        <main>
+            <!-- ══ HERO ═══════════════════════════════════════════════════════ -->
+            <section class="hero" id="hero-section">
+                <div class="hero-text">
+                    <h2>Discover &amp; Cook Delicious Recipes</h2>
+                    <p>Search thousands of recipes powered by TheMealDB, filter by cuisine and category, save your favorites, and follow step-by-step cooking mode!</p>
+                </div>
+                <div class="hero-image">
+                    <div class="floating-image" id="floating-image-1" aria-label="Recipe image">
+                        <img class="hero-image-layer hero-image-current" alt="Recipe image">
+                        <img class="hero-image-layer hero-image-next" alt="">
+                    </div>
+                    <div class="floating-image" id="floating-image-2" aria-label="Recipe image">
+                        <img class="hero-image-layer hero-image-current" alt="Recipe image">
+                        <img class="hero-image-layer hero-image-next" alt="">
+                    </div>
+                    <div class="floating-image" id="floating-image-3" aria-label="Recipe image">
+                        <img class="hero-image-layer hero-image-current" alt="Recipe image">
+                        <img class="hero-image-layer hero-image-next" alt="">
+                    </div>
+                </div>
+            </section>
+
+            <!-- ══ FILTER SECTION ═════════════════════════════════════════════ -->
+            <section class="filter-section" id="filter-section">
+                <div class="filter-header">
+                    <h3><i class="fas fa-sliders-h"></i> Filter Recipes</h3>
+                    <button type="button" id="clear-filters-btn" class="btn-text hidden">
+                        <i class="fas fa-undo"></i> Clear Filters
+                    </button>
+                </div>
+                <div class="filter-container">
+                    <div class="filter-option">
+                        <label for="cuisine"><i class="fas fa-globe-americas"></i> Cuisine (Area)</label>
+                        <select id="cuisine">
+                            <option value="">Any Cuisine</option>
+                            <option value="Italian">Italian</option>
+                            <option value="Mexican">Mexican</option>
+                            <option value="Indian">Indian</option>
+                            <option value="Chinese">Chinese</option>
+                            <option value="American">American</option>
+                            <option value="Japanese">Japanese</option>
+                            <option value="French">French</option>
+                            <option value="Spanish">Spanish</option>
+                            <option value="Thai">Thai</option>
+                            <option value="British">British</option>
+                            <option value="Greek">Greek</option>
+                            <option value="Canadian">Canadian</option>
+                            <option value="Moroccan">Moroccan</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-option">
+                        <label for="meal-type"><i class="fas fa-utensils"></i> Category</label>
+                        <select id="meal-type">
+                            <option value="">Any Category</option>
+                            <option value="Breakfast">Breakfast</option>
+                            <option value="Dessert">Dessert</option>
+                            <option value="Seafood">Seafood</option>
+                            <option value="Vegetarian">Vegetarian</option>
+                            <option value="Starter">Starter</option>
+                            <option value="Side">Side</option>
+                            <option value="Beef">Beef</option>
+                            <option value="Chicken">Chicken</option>
+                            <option value="Pasta">Pasta</option>
+                            <option value="Miscellaneous">Miscellaneous</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-option">
+                        <label for="diet"><i class="fas fa-leaf"></i> Diet Heuristic</label>
+                        <select id="diet">
+                            <option value="">Any Diet</option>
+                            <option value="vegetarian">Vegetarian</option>
+                            <option value="vegan">Vegan</option>
+                            <option value="gluten free">Gluten Free</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ══ RESULTS HEADER ════════════════════════════════════════════ -->
+            <div class="results-header" id="results-header">
+                <h3 id="results-title">Recommended For You</h3>
+                <span id="results-count" class="results-count"></span>
+            </div>
+
+            <!-- ══ RESULTS CONTAINER ═════════════════════════════════════════ -->
+            <div id="results-container">
+                <div class="initial-message">
+                    <div class="recipe-card placeholder">
+                        <div class="recipe-card-image-wrap animated-bg"></div>
+                        <div class="recipe-info">
+                            <div class="animated-bg animated-bg-text placeholder-wide"></div>
+                            <div class="animated-bg animated-bg-text placeholder-half"></div>
+                        </div>
+                    </div>
+                    <div class="recipe-card placeholder">
+                        <div class="recipe-card-image-wrap animated-bg"></div>
+                        <div class="recipe-info">
+                            <div class="animated-bg animated-bg-text placeholder-wide"></div>
+                            <div class="animated-bg animated-bg-text placeholder-half"></div>
+                        </div>
+                    </div>
+                    <div class="recipe-card placeholder">
+                        <div class="recipe-card-image-wrap animated-bg"></div>
+                        <div class="recipe-info">
+                            <div class="animated-bg animated-bg-text placeholder-wide"></div>
+                            <div class="animated-bg animated-bg-text placeholder-half"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- ══ FOOTER ════════════════════════════════════════════════════════ -->
+        <footer class="site-footer">
+            <div class="footer-inner">
+                <div class="footer-brand">
+                    <h2>Flavor<span>Finder</span></h2>
+                    <p>Your ultimate interactive recipe discovery and step-by-step cooking companion.</p>
+                </div>
+                <div class="footer-copyright">
+                    <p>&copy; 2026 FlavorFinder. Powered by S-Productions</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════════
+         RECIPE DETAILS MODAL
+    ══════════════════════════════════════════════════════════════════════════ -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" id="close-modal-btn">&times;</span>
+
+            <!-- Recipe Overview View -->
+            <div id="recipe-overview-view" class="modal-view active">
+                <div class="modal-header-banner">
+                    <h2 id="modal-title">Loading...</h2>
+                    <div class="modal-action-bar">
+                        <button type="button" id="fav-toggle-btn" class="btn btn-fav-outline hidden" title="Save to favorites">
+                            <i class="fas fa-heart"></i> <span id="fav-toggle-text">Save Favorite</span>
+                        </button>
+                        <button type="button" id="start-cooking-btn" class="btn btn-cooking">
+                            <i class="fas fa-fire"></i> Start Cooking Step-by-Step
+                        </button>
+                    </div>
+                </div>
+
+                <div class="modal-body">
+                    <div class="modal-left">
+                        <img id="modal-image" src="" alt="Recipe Image">
+                        <div class="recipe-summary-box">
+                            <h4><i class="fas fa-info-circle"></i> Cuisine &amp; Category</h4>
+                            <p id="modal-summary">Loading details...</p>
+                        </div>
+                        <div id="modal-links-box" class="modal-links-box"></div>
+                    </div>
+                    <div class="modal-right">
+                        <div class="recipe-meta">
+                            <span id="modal-time"><i class="fas fa-clock"></i> 30 mins</span>
+                            <span id="modal-servings"><i class="fas fa-users"></i> 4 servings</span>
+                            <span id="modal-cuisine-tag" class="meta-tag"><i class="fas fa-globe"></i> Area</span>
+                            <span id="modal-category-tag" class="meta-tag"><i class="fas fa-utensils"></i> Category</span>
+                        </div>
+
+                        <div class="ingredients-section">
+                            <div class="section-title-bar">
+                                <h3><i class="fas fa-shopping-basket"></i> Ingredients Checklist</h3>
+                                <span class="checklist-progress" id="checklist-counter">0/0 checked</span>
+                            </div>
+                            <p class="checklist-hint">Check off ingredients as you prepare them:</p>
+                            <ul id="ingredients-list" class="checklist-ul"></ul>
+                        </div>
+
+                        <div class="instructions-section">
+                            <h3><i class="fas fa-list-ol"></i> Instructions Overview</h3>
+                            <ol id="instructions-list"></ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step-by-Step Cooking Mode View -->
+            <div id="recipe-cooking-view" class="modal-view hidden">
+                <div class="cooking-header">
+                    <button type="button" id="exit-cooking-btn" class="btn btn-secondary btn-sm">
+                        <i class="fas fa-arrow-left"></i> Back to Overview
+                    </button>
+                    <div class="cooking-title-group">
+                        <span class="cooking-badge">COOKING MODE</span>
+                        <h2 id="cooking-recipe-title">Recipe Title</h2>
+                    </div>
+                </div>
+
+                <div class="progress-bar-container">
+                    <div class="progress-bar-fill" id="cooking-progress-fill"></div>
+                </div>
+
+                <div class="cooking-body">
+                    <div class="step-card">
+                        <div class="step-card-header">
+                            <span class="step-number" id="cooking-step-number">STEP 1 OF 8</span>
+                        </div>
+                        <div class="step-card-content">
+                            <p id="cooking-step-text" class="step-instruction-text">Step instructions will appear here...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cooking-footer-nav">
+                    <button type="button" id="prev-step-btn" class="btn btn-outline" disabled>
+                        <i class="fas fa-chevron-left"></i> Previous Step
+                    </button>
+                    <button type="button" id="next-step-btn" class="btn btn-primary">
+                        Next Step <i class="fas fa-chevron-right"></i>
+                    </button>
+                    <button type="button" id="finish-recipe-btn" class="btn btn-success hidden">
+                        <i class="fas fa-check-circle"></i> Finish Recipe!
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════════
+         FAVORITES MODAL
+    ══════════════════════════════════════════════════════════════════════════ -->
+    <div id="favorites-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" id="close-favorites-btn">&times;</span>
+            <div class="fav-modal-header">
+                <h2><i class="fas fa-heart"></i> My Favorites</h2>
+                <p id="fav-modal-subtitle">Your saved recipes</p>
+            </div>
+            <div id="fav-recipes-container" class="fav-recipes-container">
+                <!-- populated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <div id="profile-modal" class="modal">
+        <div class="modal-content profile-modal-content">
+            <button type="button" class="close-btn" id="close-profile-btn" aria-label="Close profile">&times;</button>
+            <div class="profile-header">
+                <div class="profile-icon"><i class="fas fa-user"></i></div>
+                <div>
+                    <h2>Your Profile</h2>
+                    <p>Account details from FlavorFinder</p>
+                </div>
+            </div>
+            <div class="profile-details">
+                <div><span>Name</span><strong id="profile-name"></strong></div>
+                <div><span>Username</span><strong id="profile-username"></strong></div>
+                <div><span>Email</span><strong id="profile-email"></strong></div>
+                <div><span>Favorites</span><strong id="profile-favorites-count">0 recipes</strong></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════════
+         AUTH MODAL (Login / Register)
+    ══════════════════════════════════════════════════════════════════════════ -->
+    <div id="auth-modal" class="modal auth-gate">
+        <div class="modal-content auth-modal-content">
+            <span class="close-btn" id="close-auth-btn">&times;</span>
+
+            <!-- Login Form -->
+            <div id="login-view" class="auth-view active">
+                <div class="auth-header">
+                    <div class="auth-icon"><i class="fas fa-utensils"></i></div>
+                    <h2>Welcome Back</h2>
+                    <p>Sign in to access your saved favorites</p>
+                </div>
+                <form id="login-form" class="auth-form" novalidate>
+                    <div class="form-group">
+                        <label for="login-identifier"><i class="fas fa-user"></i> Username or Email</label>
+                            <input type="text" id="login-identifier" placeholder="Enter username or email" required autocomplete="username">
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password"><i class="fas fa-lock"></i> Password</label>
+                        <div class="password-input-wrap">
+                            <input type="password" id="login-password" placeholder="Enter your password" required autocomplete="current-password">
+                            <button type="button" class="toggle-password" data-target="login-password" aria-label="Show or hide password" title="Show or hide password">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="login-error" class="auth-error hidden"></div>
+                    <button type="submit" id="login-submit-btn" class="btn btn-primary auth-submit-btn">
+                        <i class="fas fa-sign-in-alt"></i> Sign In
+                    </button>
+                </form>
+                <p class="auth-switch">Don't have an account? <button type="button" id="switch-to-register" class="auth-link">Register here</button></p>
+            </div>
+
+            <!-- Register Form -->
+            <div id="register-view" class="auth-view hidden">
+                <div class="auth-header">
+                    <div class="auth-icon"><i class="fas fa-user-plus"></i></div>
+                    <h2>Create Account</h2>
+                    <p>Join FlavorFinder and save your favorite recipes</p>
+                </div>
+                <form id="register-form" class="auth-form" novalidate>
+                    <div class="form-group">
+                        <label for="register-name"><i class="fas fa-id-card"></i> Full Name</label>
+                        <input type="text" id="register-name" placeholder="Enter your full name" required autocomplete="name" maxlength="30">
+                    </div>
+                    <div class="form-group">
+                        <label for="register-username"><i class="fas fa-user"></i> Username</label>
+                        <input type="text" id="register-username" placeholder="Choose a username (min 3 chars)" required autocomplete="username" minlength="3" maxlength="30">
+                    </div>
+                    <div class="form-group">
+                        <label for="register-email"><i class="fas fa-envelope"></i> Email</label>
+                        <input type="email" id="register-email" placeholder="Enter your email" required autocomplete="email">
+                    </div>
+                    <div class="form-group">
+                        <label for="register-confirm-password"><i class="fas fa-check"></i> Confirm Password</label>
+                        <div class="password-input-wrap">
+                            <input type="password" id="register-confirm-password" placeholder="Re-enter your password" required autocomplete="new-password">
+                            <button type="button" class="toggle-password" data-target="register-confirm-password" aria-label="Show or hide confirmation password">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password"><i class="fas fa-lock"></i> Password</label>
+                        <div class="password-input-wrap">
+                            <input type="password" id="register-password" placeholder="Create a password (min 6 chars)" required autocomplete="new-password" minlength="6">
+                            <button type="button" class="toggle-password" data-target="register-password" aria-label="Show or hide password" title="Show or hide password">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="register-error" class="auth-error hidden"></div>
+                    <button type="submit" id="register-submit-btn" class="btn btn-primary auth-submit-btn">
+                        <i class="fas fa-user-plus"></i> Create Account
+                    </button>
+                </form>
+                <p class="auth-switch">Already have an account? <button type="button" id="switch-to-login" class="auth-link">Sign in here</button></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast hidden"></div>
+
+    <!-- Custom JS -->
+    <script src="script.js"></script>
+</body>
+</html>
