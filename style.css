@@ -181,7 +181,7 @@ main { flex: 1; }
     border-radius: var(--radius-md);
     border: 1px solid var(--border-color);
     box-shadow: var(--shadow-lg);
-    z-index: 500;
+    z-index: 2000;
     overflow: hidden;
     animation: dropdownPop 0.2s cubic-bezier(0.16,1,0.3,1);
 }
@@ -1294,6 +1294,20 @@ main {
     padding-left: max(20px, calc((100vw - 1400px) / 2));
     padding-right: max(20px, calc((100vw - 1400px) / 2));
     box-sizing: border-box;
+}
+
+.header {
+    position: relative;
+    z-index: 100;
+    overflow: visible;
+}
+
+.header-top,
+.header-auth,
+.user-dropdown-wrapper {
+    position: relative;
+    z-index: 101;
+    overflow: visible;
 }
 
 .header > *,
