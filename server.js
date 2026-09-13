@@ -20,7 +20,6 @@ const MAX_RECIPES = 20;
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
-app.use(express.static(__dirname));
 
 // ─── Mongoose Schemas ─────────────────────────────────────────────────────────
 const userSchema = new mongoose.Schema({
@@ -447,9 +446,12 @@ app.use('/api/*', (req, res) => {
   res.status(404).json({ success: false, error: `API endpoint ${req.originalUrl} not found` });
 });
 
+// ─── Frontend static assets ──────────────────────────────────────────────────
+app.use(express.static(path.join(__dirname, 'public')));
+
 // ─── SPA Fallback ─────────────────────────────────────────────────────────────
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // ─── Start Server ─────────────────────────────────────────────────────────────
@@ -475,7 +477,7 @@ async function start() {
     console.log(`MongoDB connected: ${mongoose.connection.name}`);
     startServer(PORT);
   } catch (error) {
-    console.error(`MongoDB connection failed for ${MONGODB_URI}:`, error.message);
+    console.error('MongoDB connection failed:', error.message);
     process.exitCode = 1;
   }
 }
